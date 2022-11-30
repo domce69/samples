@@ -1,0 +1,56 @@
+SQL> SET SERVEROUTPUT ON
+
+
+SQL> SET ECHO ON
+
+
+SQL> SET FEEDBACK ON
+SQL> SET LINESIZE 200
+SQL> SET PAGESIZE 400
+SQL> SET SERVEROUTPUT ON
+
+
+SQL> DECLARE
+  2    CURSOR CURSA IS
+  3        SELECT R_NAME,
+  4               R_REGIONKEY
+  5        FROM REGION
+  6        ORDER BY R_NAME DESC;
+  7  
+  8    curs_type CURSA%ROWTYPE;
+  9    n_nation NATION.N_NAME%TYPE;
+ 10  BEGIN
+ 11    OPEN CURSA;
+ 12    LOOP
+ 13      FETCH CURSA INTO curs_type;
+ 14      EXIT WHEN CURSA%NOTFOUND;
+ 15      DBMS_OUTPUT.PUT(curs_type.R_NAME);
+ 16      FOR nat_curs IN (SELECT N_NAME, N_REGIONKEY FROM NATION WHERE N_REGIONKEY = curs_type.R_REGIONKEY ORDER BY N_NAME ASC FETCH FIRST 3 ROWS ONLY)
+ 17      LOOP
+ 18          DBMS_OUTPUT.PUT(nat_curs.N_NAME);
+ 19      END LOOP;
+ 20      DBMS_OUTPUT.PUT_LINE('');
+ 21    END LOOP;
+ 22    CLOSE CURSA;
+ 23  END;
+ 24  /
+
+
+SOUTH AMERICA            ROMANIA                  RUSSIA                   
+SOUTH AMERICA            FRANCE                   GERMANY                  JAPAN                    
+OCEANIA                  CHINA                    INDIA                    JORDAN                   
+NORTH AMERICA            
+MIDDLE EAST              EGYPT                    IRAN                     IRAQ                     
+EUROPE                   INDIA                    INDONESIA                MALAWI                   
+CENTRAL AMERICA          RWNDA                    SAUDI ARABIA             UNITED KINGDOM           
+AUSTRALIA                CHINA                    KENYA                    
+ASIA                     AUSTRALIA                BRAZIL                   CANADA                   
+AFRICA                   ALGERIA                  SUDAN                    
+
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> SPOOL OFF;
+
+
